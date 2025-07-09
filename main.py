@@ -4,12 +4,12 @@ import os
 
 # ==== CONFIG SECTION ====
 # Put your image path here (absolute or relative)
-image_path = "C:/Users/WASIF TAK/OneDrive/Desktop/projects/Colorize/5.png"
+image_path = "Colorize/1.png"
 
 # Model paths
-prototxt_path = "C:/Users/WASIF TAK/OneDrive/Desktop/projects/Colorize/models/colorization_deploy_v2.prototxt"
-caffemodel_path = "C:/Users/WASIF TAK/OneDrive/Desktop/projects/Colorize/models/colorization_release_v2.caffemodel"
-kernel_path = "C:/Users/WASIF TAK/OneDrive/Desktop/projects/Colorize/models/pts_in_hull.npy"
+prototxt_path = "models/colorization_deploy_v2.prototxt"
+caffemodel_path = "models/colorization_release_v2.caffemodel"
+kernel_path = "models/pts_in_hull.npy"
 # ========================
 
 # Get folder where this script is located
