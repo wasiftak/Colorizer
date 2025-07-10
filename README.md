@@ -8,7 +8,7 @@ We use a pretrained CNN model (colorization_release_v2.caffemodel) to predict co
 
 ## 🏃 How to run
 
-1. Download the pretrained models from [colorization models link](https://github.com/richzhang/colorization).
+1. Download the pretrained models from [colorization models link](https://drive.google.com/drive/folders/1FaDajjtAsntF_Sw5gqF0WyakviA5l8-a).
 2. Place them in a folder named `models/`.
 3. Put your black-and-white images in the project root (e.g., `1.png`).
 4. Install requirements:
