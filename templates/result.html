@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+    <title>Result - AI Colorizer</title>
+</head>
+<body>
+    <h1>Colorization Result</h1>
+    <h3>Original</h3>
+    <img src="{{ url_for('uploaded_file', filename=original_file) }}" width="300">
+    <h3>Colorized</h3>
+    <img src="{{ url_for('result_file', filename=colorized_file) }}" width="300">
+    <br><br>
+    <a href="{{ url_for('result_file', filename=colorized_file) }}" download>Download Colorized Image</a>
+    <br><br>
+    <a href="/">Try another image</a>
+</body>
+</html>
