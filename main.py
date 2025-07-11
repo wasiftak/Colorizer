@@ -3,9 +3,9 @@ import cv2
 import os
 
 # Set model paths
-prototxt_path = "C:/Users/WASIF TAK/OneDrive/Desktop/projects/Colorize_local/models/colorization_deploy_v2.prototxt"
-caffemodel_path = "C:/Users/WASIF TAK/OneDrive/Desktop/projects/Colorize_local/models/colorization_release_v2.caffemodel"
-kernel_path = "C:/Users/WASIF TAK/OneDrive/Desktop/projects/Colorize_local/models/pts_in_hull.npy"
+prototxt_path = "models/colorization_deploy_v2.prototxt"
+caffemodel_path = "models/colorization_release_v2.caffemodel"
+kernel_path = "models/pts_in_hull.npy"
 
 
 # Load model only once
