@@ -1,33 +1,27 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Result - Colorizer</title>
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+    <meta charset="UTF-8">
+    <title>ChromaNova - Colorization Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="bg-light">
-
-    <div class="container py-5">
-        <h1 class="mb-4 text-center">✨ Colorization Result</h1>
-
-        <div class="row">
-            <div class="col-md-6 text-center">
-                <h5>Original</h5>
-                <img src="{{ url_for('uploaded_file', filename=original_file) }}" class="img-fluid rounded shadow">
+<body>
+    <div class="container">
+        <h1>Colorization Result</h1>
+        <div class="image-row">
+            <div class="image-column">
+                <h2>Original</h2>
+                <img src="{{ url_for('uploaded_file', filename=original_file) }}" alt="Original Image">
             </div>
-            <div class="col-md-6 text-center">
-                <h5>Colorized</h5>
-                <img src="{{ url_for('result_file', filename=colorized_file) }}" class="img-fluid rounded shadow">
+            <div class="image-column">
+                <h2>Colorized</h2>
+                <img src="{{ url_for('result_file', filename=colorized_file) }}" alt="Colorized Image">
             </div>
         </div>
-
-        <div class="text-center mt-4">
-            <a href="{{ url_for('result_file', filename=colorized_file) }}" class="btn btn-success" download>Download Colorized Image</a>
-            <a href="/" class="btn btn-secondary ms-2">Try Another</a>
-        </div>
+        <br>
+        <a class="action-link" href="{{ url_for('result_file', filename=colorized_file) }}" download>Download Colorized Image</a>
+        <br><br>
+        <a class="action-link" href="/">Try another image</a>
     </div>
-
 </body>
 </html>
