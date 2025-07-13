@@ -1,13 +1,26 @@
 <!doctype html>
 <html>
 <head>
-    <title>AI Colorizer</title>
+    <title>Colorizer</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 </head>
-<body>
-    <h1>Upload a black & white image to colorize</h1>
-    <form action="/colorize" method="post" enctype="multipart/form-data">
-        <input type="file" name="image" accept="image/*" required>
-        <input type="submit" value="Colorize!">
-    </form>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <h1 class="mb-4 text-center">🎨 AI Image Colorizer</h1>
+
+        <div class="card shadow p-4">
+            <form action="/colorize" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <input type="file" class="form-control" name="image" accept="image/*" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Colorize Image</button>
+            </form>
+        </div>
+    </div>
+
 </body>
 </html>
