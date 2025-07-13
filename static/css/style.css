@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Alegreya&family=Belleza&display=swap');
+
+body {
+    background-color: #4b2020;
+    color: #ffffff;
+    font-family: 'Alegreya', serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #2d1010;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    width: 95%;
+    max-width: 1000px;
+}
+
+h1 {
+    font-family: 'Belleza', sans-serif;
+    color: #ff2c2c;
+    font-size: 7rem;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 1.5rem;
+    color: #e0e0e0;
+    margin-bottom: 30px;
+}
+
+input[type="file"] {
+    margin: 0 auto 20px auto;
+    display: block;
+    font-size: 1rem;
+}
+
+button {
+    background-color: #ff2c2c;
+    color: white;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #e60000;
+    transform: scale(1.05);
+}
+
+.image-row {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.image-column {
+    flex: 1;
+    text-align: center;
+}
+
+.image-column img {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.action-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #ff2c2c;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: color 0.3s;
+}
+
+.action-link:hover {
+    color: #e60000;
+}
