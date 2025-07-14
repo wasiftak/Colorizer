@@ -1,17 +1,27 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Result - AI Colorizer</title>
+    <meta charset="UTF-8">
+    <title>ChromaNova - Colorization Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Colorization Result</h1>
-    <h3>Original</h3>
-    <img src="{{ url_for('uploaded_file', filename=original_file) }}" width="300">
-    <h3>Colorized</h3>
-    <img src="{{ url_for('result_file', filename=colorized_file) }}" width="300">
-    <br><br>
-    <a href="{{ url_for('result_file', filename=colorized_file) }}" download>Download Colorized Image</a>
-    <br><br>
-    <a href="/">Try another image</a>
+    <div class="container">
+        <h1>Colorization Result</h1>
+        <div class="image-row">
+            <div class="image-column">
+                <h2>Original</h2>
+                <img src="{{ url_for('uploaded_file', filename=original_file) }}" alt="Original Image">
+            </div>
+            <div class="image-column">
+                <h2>Colorized</h2>
+                <img src="{{ url_for('result_file', filename=colorized_file) }}" alt="Colorized Image">
+            </div>
+        </div>
+        <br>
+        <a class="action-link" href="{{ url_for('result_file', filename=colorized_file) }}" download>Download Colorized Image</a>
+        <br><br>
+        <a class="action-link" href="/">Try another image</a>
+    </div>
 </body>
 </html>

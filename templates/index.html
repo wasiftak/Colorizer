@@ -1,13 +1,19 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>AI Colorizer</title>
+    <meta charset="UTF-8">
+    <title>ChromaNova - Colorize Your B&W Images</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Upload a black & white image to colorize</h1>
-    <form action="/colorize" method="post" enctype="multipart/form-data">
-        <input type="file" name="image" accept="image/*" required>
-        <input type="submit" value="Colorize!">
-    </form>
+    <div class="container">
+        <h1>ChromaNova</h1>
+        <p>🎨 Breathe life into your black & white images with AI colorization</p>
+        <form action="/colorize" method="post" enctype="multipart/form-data">
+            <input type="file" name="image" required>
+            <br>
+            <button type="submit">✨ Colorize Image</button>
+        </form>
+    </div>
 </body>
 </html>
