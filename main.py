@@ -6,8 +6,8 @@ import cv2
 def download_models():
     os.makedirs("models", exist_ok=True)
 
-    caffemodel_url = "https://drive.google.com/uc?id=1hzb13B8UUxcc8hgGzukZNZHwqEDtItMY"
-    prototxt_url = "https://drive.google.com/uc?id=1EshSEknFNC0eknpyLk39N1x-PKRi4Vpv"
+    caffemodel_url = "https://drive.google.com/uc?id=1EshSEknFNC0eknpyLk39N1x-PKRi4Vpv" 
+    prototxt_url =    "https://drive.google.com/uc?id=1hzb13B8UUxcc8hgGzukZNZHwqEDtItMY"
     hull_url = "https://drive.google.com/uc?id=1F1Prs7yDhoQwIJ36Qa3a1dAqtd6F5UhT"
 
     if not os.path.exists("models/colorization_release_v2.caffemodel"):
