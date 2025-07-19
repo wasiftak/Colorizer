@@ -1,54 +1,108 @@
-import os
-import gdown
 import numpy as np
 import cv2
+import os
 
-def download_models():
-    os.makedirs("models", exist_ok=True)
+def colorize_image(image_path, output_path):
+    """
+    This function takes a path to a grayscale image, colorizes it using a
+    pre-trained Caffe model, and saves the result.
+    """
+    try:
+        # --- ROBUST PATH CONSTRUCTION ---
+        # Get the absolute path to the directory where this script is located.
+        # This is the key to making the script work reliably.
+        script_dir = os.path.dirname(os.path.abspath(__file__))
 
-    caffemodel_url = "https://drive.google.com/uc?id=1hzb13B8UUxcc8hgGzukZNZHwqEDtItMY"
-    prototxt_url = "https://drive.google.com/uc?id=1EshSEknFNC0eknpyLk39N1x-PKRi4Vpv"
-    hull_url = "https://drive.google.com/uc?id=1F1Prs7yDhoQwIJ36Qa3a1dAqtd6F5UhT"
+        # Define the paths to the model files relative to the script's directory.
+        prototxt_path = os.path.join(script_dir, 'models', 'colorization_deploy_v2.prototxt')
+        caffemodel_path = os.path.join(script_dir, 'models', 'colorization_release_v2.caffemodel')
+        points_path = os.path.join(script_dir, 'models', 'pts_in_hull.npy')
 
-    if not os.path.exists("models/colorization_release_v2.caffemodel"):
-        gdown.download(caffemodel_url, "models/colorization_release_v2.caffemodel", quiet=False)
+        # --- VERIFICATION (Important for Debugging) ---
+        # Print the absolute paths to ensure they are correct.
+        # Before running, manually check if these files exist at these locations.
+        print("--- Loading Model Files ---")
+        print(f"Prototxt:   {prototxt_path}")
+        print(f"CaffeModel: {caffemodel_path}")
+        print(f"NumPy Points: {points_path}")
+        print("---------------------------\n")
 
-    if not os.path.exists("models/colorization_deploy_v2.prototxt"):
-        gdown.download(prototxt_url, "models/colorization_deploy_v2.prototxt", quiet=False)
+        # --- MODEL LOADING ---
+        # Load the Caffe model from disk.
+        print("[INFO] Loading model...")
+        net = cv2.dnn.readNetFromCaffe(prototxt_path, caffemodel_path)
 
-    if not os.path.exists("models/pts_in_hull.npy"):
-        gdown.download(hull_url, "models/pts_in_hull.npy", quiet=False)
+        # Load the cluster center points (the "kernel").
+        pts = np.load(points_path)
 
-# Download models if not present
-download_models()
+        # Add the cluster centers as 1x1 convolutions to the model.
+        class8 = net.getLayerId("class8_ab")
+        conv8 = net.getLayerId("conv8_313_rh")
+        pts = pts.transpose().reshape(2, 313, 1, 1)
+        net.getLayer(class8).blobs.append(pts)
+        net.getLayer(conv8).blobs.append(np.full([1, 313], 2.606, dtype="float32"))
 
-def colorize_image(input_path, output_path):
-    prototxt_path = "models/colorization_deploy_v2.prototxt"
-    caffemodel_path = "models/colorization_release_v2.caffemodel"
-    kernel_path = "models/pts_in_hull.npy"
+        # --- IMAGE PROCESSING ---
+        # Load the input image, scale it, and convert to LAB color space.
+        image = cv2.imread(image_path)
+        if image is None:
+            print(f"[ERROR] Could not read image from path: {image_path}")
+            return
 
-    net = cv2.dnn.readNetFromCaffe(prototxt_path, caffemodel_path)
-    points = np.load(kernel_path)
+        scaled = image.astype("float32") / 255.0
+        lab = cv2.cvtColor(scaled, cv2.COLOR_BGR2LAB)
 
-    points = points.transpose().reshape(2, 313, 1, 1)
-    net.getLayer(net.getLayerId("class8_ab")).blobs = [points.astype(np.float32)]
-    net.getLayer(net.getLayerId("conv8_313_rh")).blobs = [np.full([1, 313], 2.606, dtype="float32")]
+        # Resize the L channel to the dimensions the model expects.
+        resized = cv2.resize(lab, (224, 224))
+        L = cv2.split(resized)[0]
+        L -= 50  # Mean-centering
 
-    bw_image = cv2.imread(input_path)
-    normalized = bw_image.astype("float32") / 255.0
-    lab = cv2.cvtColor(normalized, cv2.COLOR_BGR2Lab)
+        # --- PREDICTION ---
+        # Pass the L channel through the network to predict the a and b channels.
+        print("[INFO] Colorizing image...")
+        net.setInput(cv2.dnn.blobFromImage(L))
+        ab = net.forward()[0, :, :, :].transpose((1, 2, 0))
 
-    resized = cv2.resize(lab, (224, 224))
-    L = cv2.split(resized)[0]
-    L -= 50
+        # Resize the predicted ab channels to match the original image dimensions.
+        ab = cv2.resize(ab, (image.shape[1], image.shape[0]))
 
-    net.setInput(cv2.dnn.blobFromImage(L))
-    ab = net.forward()[0, :, :, :].transpose((1, 2, 0))
-    ab = cv2.resize(ab, (bw_image.shape[1], bw_image.shape[0]))
-    L = cv2.split(lab)[0]
+        # --- RECONSTRUCTION ---
+        # Concatenate the original L channel with the predicted ab channels.
+        L = cv2.split(lab)[0]
+        colorized = np.concatenate((L[:, :, np.newaxis], ab), axis=2)
 
-    colorized = np.concatenate((L[:, :, np.newaxis], ab), axis=2)
-    colorized = cv2.cvtColor(colorized, cv2.COLOR_Lab2BGR)
-    colorized = (255 * colorized).astype("uint8")
+        # Convert the LAB image back to BGR color space.
+        colorized = cv2.cvtColor(colorized, cv2.COLOR_LAB2BGR)
+        colorized = np.clip(colorized, 0, 1)
 
-    cv2.imwrite(output_path, colorized)
+        # Convert back to 8-bit integer range.
+        colorized = (255 * colorized).astype("uint8")
+
+        # --- SAVE RESULT ---
+        cv2.imwrite(output_path, colorized)
+        print(f"[SUCCESS] Colorized image saved to: {output_path}")
+
+        # Optional: Display the images
+        # cv2.imshow("Original", image)
+        # cv2.imshow("Colorized", colorized)
+        # cv2.waitKey(0)
+
+    except cv2.error as e:
+        print("[ERROR] OpenCV error. This often means a model file is missing or corrupt.")
+        print(f"Details: {e}")
+    except FileNotFoundError:
+        print("[ERROR] A file was not found. Please check your file paths and ensure the 'models' directory is correct.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+if __name__ == '__main__':
+    # --- USAGE EXAMPLE ---
+    # Make sure you have an 'images' folder with your test image
+    # and an 'outputs' folder for the results.
+    input_image_path = 'images/your_test_image.jpg' # CHANGE THIS
+    output_image_path = 'outputs/colorized_result.jpg' # CHANGE THIS
+
+    # Create output directory if it doesn't exist
+    os.makedirs('outputs', exist_ok=True)
+
+    colorize_image(input_image_path, output_image_path)
